@@ -1,13 +1,9 @@
 <?php
-/* @var $this ProjectController */
-/* @var $data Project */
+/* @var $this IssueController */
+/* @var $data Issue */
 ?>
 
 <div class="view">
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('id')); ?>:</b>
-	<?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id'=>$data->id)); ?>
-	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('name')); ?>:</b>
 	<?php echo CHtml::encode($data->name); ?>
@@ -15,6 +11,19 @@
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('description')); ?>:</b>
 	<?php echo CHtml::encode($data->description); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('type_id')); ?>:</b>
+	<?php echo CHtml::encode($data->getTypeText()); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('status_id')); ?>:</b>
+	<?php echo CHtml::encode($data->getStatusText()); ?>
+	<br />
+
+	<?php /*
+	<b><?php echo CHtml::encode($data->getAttributeLabel('requester_id')); ?>:</b>
+	<?php echo CHtml::encode($data->requester_id); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('create_time')); ?>:</b>
@@ -32,6 +41,7 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('update_user_id')); ?>:</b>
 	<?php echo CHtml::encode($data->update_user_id); ?>
 	<br />
-        
-        
+
+	*/ ?>
+
 </div>

@@ -22,12 +22,12 @@
  * @property User $owner
  * @property Project $project
  */
-class Issue extends CActiveRecord
+class Issue extends TrackStarActiveRecord
 {
         const TYPE_BUG = 0;
         const TYPE_FEATURE= 1;
         const TYPE_TASK=2;
-        
+
         const TYPE_STATUS_NOT_YET_STARTED = 0;
         const TYPE_STATUS_STARTED = 1;
         const TYPE_STATUS_FINISHED=2;
@@ -114,10 +114,10 @@ class Issue extends CActiveRecord
 		$criteria->compare('id',$this->id);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('description',$this->description,true);
-                
+
 		$criteria->condition='project_id=:projectID';
                 $criteria->params=array(':projectID'=>  $this->project_id);
-                
+
 		$criteria->compare('type_id',$this->type_id);
 		$criteria->compare('status_id',$this->status_id);
 		$criteria->compare('owner_id',$this->owner_id);
@@ -142,7 +142,7 @@ class Issue extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-        
+
         public function getTypeOptions()
         {
             return array(
@@ -151,23 +151,23 @@ class Issue extends CActiveRecord
                 self::TYPE_TASK=>'Task',
             );
         }
-        
+
         public function getStatusOptions()
         {
             return array(
-                self::TYPE_STATUS_NOT_YET_STARTED=>'Not yet started',  
+                self::TYPE_STATUS_NOT_YET_STARTED=>'Not yet started',
                 self::TYPE_STATUS_STARTED=>'Started',
                 self::TYPE_STATUS_FINISHED=>'Finished',
             );
         }
-        
+
         public function getStatusText()
         {
             $statusOptions = $this->statusOptions;
-            return isset($statusOptions[$this->status_id]) 
+            return isset($statusOptions[$this->status_id])
                 ? $statusOptions[$this->status_id] :"unknown status ({$this->status_id})" ;
         }
-        
+
         public function getTypeText()
         {
             $typeOptions = $this->typeOptions;

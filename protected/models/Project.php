@@ -116,4 +116,68 @@ class Project extends TrackStarActiveRecord
             $usersArray = CHtml::listData($this->users,'id','username');
             return $usersArray;
         }
+        
+        public function associateUserToRole($role,$userId)
+        {
+            $sql = "INSERT INTO tbl_project_user_role (project_id,user_id,role) VALUES".
+                    "(:project_id,:user_id, :role)";
+            
+            $command = Yii::app()->db->createCommand($sql);
+            $command->bindValue(":project_id",  $this->id, PDO::PARAM_INT);
+            $command->bindValue(":user_id",  $userId, PDO::PARAM_INT);
+            $command->bindValue(":role",  $role, PDO::PARAM_STR);
+            
+            return $command->execute();
+        }
+        
+        public function removeUserFromRole($role,$userId)
+        {
+            $sql = "DELETE FROM tbl_project_user_role WHERE project_id= :projectId".
+                    " AND user_id= :userId AND role= :role";
+            $command = Yii::app()->db->createCommand($sql);
+            $command->bindValue(":projectId",$this->id, PDO::PARAM_INT);
+            $command->bindValue(":userId",$userId,PDO::PARAM_INT);
+            $command->bindValue(":role",$role,PDO::PARAM_STR);
+            
+            return $command->execute();
+        }
+        
+        public function isUserInRole($role)
+        {
+            $sql = "SELECT role FROM tbl_project_user_role WHERE project_id = :projectId AND".
+                    " user_id = :userId AND role=:role";
+            $command = Yii::app()->db->createCommand($sql);
+            $command->bindValue(":projectId",  $this->id, PDO::PARAM_INT);
+            $command->bindValue(":userId",  Yii::app()->user->getId(), PDO::PARAM_INT);
+            $command->bindValue(":role", $role, PDO::PARAM_STR);
+            
+            return $command->execute() == 1 ? true : false;
+        }
+        
+        public static function getUserRoleOptions()
+        {
+            return CHtml::listData(Yii::app()->authManager->getRoles(),'name','name');
+        }
+        
+        public function associateUserToProject($user)
+        {
+            $sql = "INSERT INTO tbl_project_user_assignment (project_id,user_id) VALUES".
+                    "(:project_id, :user_id)";
+            $command = Yii::app()->db->createCommand($sql);
+            $command->bindValue(':project_id',$this->id,PDO::PARAM_INT);
+            $command->bindValue(':user_id',$user->id,PDO::PARAM_INT);
+            return $command->execute();
+        }
+        
+        public function isUserInProject($user)
+        {
+            $sql = "SELECT user_id FROM tbl_project_user_assignment WHERE".
+                    " project_id = :projectId AND user_id = :userId";
+            
+            $command = Yii::app()->db->createCommand($sql);
+            $command->bindValue(":projectId",$this->id,PDO::PARAM_INT);
+            $command->bindValue(":userId",$user->id,PDO::PARAM_INT);
+            
+            return $command->execute()==1 ? true : false;
+        }
 }

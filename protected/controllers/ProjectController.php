@@ -28,8 +28,8 @@ class ProjectController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
+				'actions'=>array('index','view','adduser'),
+				'users'=>array('@'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
 				'actions'=>array('create','update'),
@@ -182,4 +182,37 @@ class ProjectController extends Controller
 			Yii::app()->end();
 		}
 	}
+        
+        public function actionAdduser($id)
+        {
+            $form = new ProjectUserForm;
+            $project = $this->loadModel($id);
+            
+            if(Yii::app()->user->checkAccess('createUser',array('project'=>$project)))
+            {
+                throw new CHttpException(403,'You are not authorized to per-form this action.');
+            }
+            
+            if(isset($_POST['ProjectUserForm']))
+            {
+                $form->attributes = $_POST['ProjectUserForm'];
+                $form->project = $project;
+                
+                if($form->validate())
+                {
+                    Yii::app()->user->setFlash('success',$form->username." has been added to the project.");
+                    $form = new ProjectUserForm;
+                }
+            }
+            
+            $users = User::model()->findAll();
+            $usernames = array();
+            foreach ($users as $user)
+            {
+                $usernames[] = $user->username;
+            }
+            
+            $form->project = $project;
+            $this->render('adduser',array('model'=>$form,'usernames'=>$usernames));
+        }
 }
